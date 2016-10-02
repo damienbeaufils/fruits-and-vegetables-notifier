@@ -10,7 +10,7 @@ class ParseFruitsTest:
         markup = None
 
         # when
-        fruits = self.crawler.parse_fruits(markup)
+        fruits = self.crawler.parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 0
@@ -20,7 +20,7 @@ class ParseFruitsTest:
         markup = """<div></div>"""
 
         # when
-        fruits = self.crawler.parse_fruits(markup)
+        fruits = self.crawler.parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 0
@@ -28,6 +28,7 @@ class ParseFruitsTest:
     def test_should_return_no_fruits_when_list_is_empty_in_markup(self):
         # given
         markup = """<div id="fruit-legume">
+                      <h2 id="1">Janvier</h2>
                       <div class="elements">
                         <ul id="legumes5"></ul>
                       </div>
@@ -37,7 +38,7 @@ class ParseFruitsTest:
                     </div>"""
 
         # when
-        fruits = self.crawler.parse_fruits(markup)
+        fruits = self.crawler.parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 0
@@ -45,6 +46,7 @@ class ParseFruitsTest:
     def test_should_return_a_list_containing_fruits_name_from_markup(self):
         # given
         markup = """<div id="fruit-legume">
+                      <h2 id="1">Janvier</h2>
                       <div class="elements">
                         <ul id="legumes5"></ul>
                       </div>
@@ -57,7 +59,7 @@ class ParseFruitsTest:
                     </div>"""
 
         # when
-        fruits = self.crawler.parse_fruits(markup)
+        fruits = self.crawler.parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 2
@@ -66,6 +68,7 @@ class ParseFruitsTest:
     def test_should_not_return_any_vegetables_in_fruits_list(self):
         # given
         markup = """<div id="fruit-legume">
+                      <h2 id="1">Janvier</h2>
                       <div class="elements">
                         <ul id="legumes5">
                           <li><a href="chou-rave/">Chou-rave</a></li>
@@ -80,7 +83,39 @@ class ParseFruitsTest:
                     </div>"""
 
         # when
-        fruits = self.crawler.parse_fruits(markup)
+        fruits = self.crawler.parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 1
+
+    def test_should_return_only_fruits_of_given_month(self):
+        # given
+        markup = """<div id="fruit-legume">
+                      <h2 id="11">Novembre</h2>
+                      <div class="elements">
+                        <ul id="legumes5"></ul>
+                      </div>
+                      <div class="elements">
+                        <ul id="fruitsRhubarbe">
+                          <li><a href="prune/">Prune</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div id="fruit-legume">
+                      <h2 id="12">Décembre</h2>
+                      <div class="elements">
+                        <ul id="legumes5"></ul>
+                      </div>
+                      <div class="elements">
+                        <ul id="fruitsRhubarbe">
+                          <li><a href="citron/">Citron</a></li>
+                        </ul>
+                      </div>
+                    </div>"""
+
+        # when
+        fruits = self.crawler.parse_fruits_of_month(markup, 12)
+
+        # then
+        assert len(fruits) is 1
+        assert 'Citron' in fruits

@@ -8,16 +8,18 @@ class GetCurrentFruitsAndVegetablesTest:
         self.crawler = Crawler()
         self.crawler.get_page = Mock(return_value='')
 
-    def test_should_get_main_webpage(self):
+    def test_should_get_page_showing_fruits_and_vegetables_for_all_months(self):
         # when
-        self.crawler.get_current_fruits_and_vetegables()
+        self.crawler.get_fruits_and_vegetables_of_month(1)
 
         # then
-        self.crawler.get_page.assert_called_once_with('https://www.fruits-legumes.org/')
+        self.crawler.get_page.assert_called_once_with('https://www.fruits-legumes.org/mois/')
 
     def test_should_return_a_dict_of_current_fruits_and_vegetables(self):
         # given
-        self.crawler.get_page.return_value = """<div id="fruit-legume">
+        self.crawler.get_page.return_value = """
+                    <div id="fruit-legume">
+                      <h2 id="3">Mars</h2>
                       <div class="elements">
                         <ul id="legumes5">
                           <li><a href="chou-rave/">Chou-rave</a></li>
@@ -33,7 +35,7 @@ class GetCurrentFruitsAndVegetablesTest:
                     </div>"""
 
         # when
-        current_fruits_and_vegetables = self.crawler.get_current_fruits_and_vetegables()
+        current_fruits_and_vegetables = self.crawler.get_fruits_and_vegetables_of_month(3)
 
         # then
         assert len(current_fruits_and_vegetables) is 2

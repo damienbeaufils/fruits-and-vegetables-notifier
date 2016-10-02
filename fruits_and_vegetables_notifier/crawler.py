@@ -8,17 +8,17 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-ROOT_URL = 'https://www.fruits-legumes.org/'
+ROOT_URL = 'https://www.fruits-legumes.org/mois/'
 ROOT_ELEMENT_ID = 'fruit-legume'
 VEGETABLES_UL_INDEX = 0
 FRUITS_UL_INDEX = 1
 
 
 class Crawler:
-    def get_current_fruits_and_vetegables(self):
+    def get_fruits_and_vegetables_of_month(self, month):
         markup = self.get_page(ROOT_URL)
-        fruits = self.parse_fruits(markup)
-        vegetables = self.parse_vegetables(markup)
+        fruits = self.parse_fruits_of_month(markup, month)
+        vegetables = self.parse_vegetables_of_month(markup, month)
         return {
             'fruits': fruits,
             'vegetables': vegetables
@@ -36,15 +36,23 @@ class Crawler:
         finally:
             return body
 
-    def parse_fruits(self, markup):
-        return self.parse_links_from_specific_ul(markup, FRUITS_UL_INDEX)
+    def parse_fruits_of_month(self, markup, month):
+        fruits_and_vegetables_of_current_month = self.parse_fruits_and_vegetables_of_current_month(markup, month)
+        return self.parse_links_from_specific_ul(fruits_and_vegetables_of_current_month, FRUITS_UL_INDEX)
 
-    def parse_vegetables(self, markup):
-        return self.parse_links_from_specific_ul(markup, VEGETABLES_UL_INDEX)
+    def parse_vegetables_of_month(self, markup, month):
+        fruits_and_vegetables_of_current_month = self.parse_fruits_and_vegetables_of_current_month(markup, month)
+        return self.parse_links_from_specific_ul(fruits_and_vegetables_of_current_month, VEGETABLES_UL_INDEX)
 
     @staticmethod
-    def parse_links_from_specific_ul(markup, ul_index):
-        fruits_and_vegetables = BeautifulSoup(markup, 'html.parser').find(id=ROOT_ELEMENT_ID) if markup else None
-        if fruits_and_vegetables is None:
+    def parse_fruits_and_vegetables_of_current_month(markup, month):
+        dom = BeautifulSoup(markup, 'html.parser') if markup else None
+        current_month_heading = dom.find('h2', id=month) if dom else None
+        return current_month_heading.parent if current_month_heading else None
+
+    @staticmethod
+    def parse_links_from_specific_ul(fruits_and_vegetables_of_current_month, ul_index):
+        if fruits_and_vegetables_of_current_month is None:
             return []
-        return [link.get_text() for link in fruits_and_vegetables.find_all('ul')[ul_index].select('a')]
+
+        return [link.get_text() for link in fruits_and_vegetables_of_current_month.find_all('ul')[ul_index].select('a')]
