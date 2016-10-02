@@ -1,0 +1,12 @@
+.idea/
+*.iml
+*.log
+*.db
+*.csv
+.cache
+*/**/*.pyc
+*/**/__pycache__
+*/**/*.py.bak
+env/
+venv/
+.coverage
