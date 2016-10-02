@@ -30,7 +30,7 @@ class ParseVegetablesTest:
         markup = """<div id="fruit-legume">
                       <h2 id="1">Janvier</h2>
                       <div class="elements">
-                        <ul id="legumes5"></ul>
+                        <ul id="legumesde-XXX"></ul>
                       </div>
                       <div class="elements">
                         <ul id="vegetablesRhubarbe"></ul>
@@ -48,7 +48,7 @@ class ParseVegetablesTest:
         markup = """<div id="fruit-legume">
                       <h2 id="1">Janvier</h2>
                       <div class="elements">
-                        <ul id="legumes5">
+                        <ul id="legumesde-XXX">
                           <li><a href="chou-rave/">Chou-rave</a></li>
                           <li><a href="cima-di-rapa/">Cima di Rapa</a></li>
                         </ul>
@@ -70,7 +70,7 @@ class ParseVegetablesTest:
         markup = """<div id="fruit-legume">
                       <h2 id="1">Janvier</h2>
                       <div class="elements">
-                        <ul id="legumes5">
+                        <ul id="legumesde-XXX">
                           <li><a href="chou-rave/">Chou-rave</a></li>
                         </ul>
                       </div>
@@ -93,23 +93,23 @@ class ParseVegetablesTest:
         markup = """<div id="fruit-legume">
                       <h2 id="11">Novembre</h2>
                       <div class="elements">
-                        <ul id="legumes5">
+                        <ul id="legumesde-XXX">
                           <li><a href="chou-rave/">Chou-rave</a></li>
                         </ul>
                       </div>
                       <div class="elements">
-                        <ul id="fruitsRhubarbe"></ul>
+                        <ul id="fruitsde-XXX"></ul>
                       </div>
                     </div>
                     <div id="fruit-legume">
                       <h2 id="12">Décembre</h2>
                       <div class="elements">
-                        <ul id="legumes5">
+                        <ul id="legumesde-XXX">
                           <li><a href="carotte/">Carotte</a></li>
                         </ul>
                       </div>
                       <div class="elements">
-                        <ul id="fruitsRhubarbe"></ul>
+                        <ul id="fruitsde-XXX"></ul>
                       </div>
                     </div>"""
 
@@ -119,3 +119,25 @@ class ParseVegetablesTest:
         # then
         assert len(vegetables) is 1
         assert 'Carotte' in vegetables
+
+    def test_should_return_only_vegetables_even_if_lists_are_inverted(self):
+        # given
+        markup = """<div id="fruit-legume">
+                      <h2 id="1">Janvier</h2>
+                      <div class="elements">
+                        <ul id="fruitsde-XXX">
+                          <li><a href="prune/">Prune</a></li>
+                        </ul>
+                      </div>
+                      <div class="elements">
+                        <ul id="legumesde-XXX">
+                          <li><a href="chou-rave/">Chou-rave</a></li>
+                        </ul>
+                      </div>
+                    </div>"""
+
+        # when
+        vegetables = self.crawler.parse_vegetables_of_month(markup, 1)
+
+        # then
+        assert 'Chou-rave' in vegetables

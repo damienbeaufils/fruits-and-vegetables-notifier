@@ -21,13 +21,13 @@ class GetCurrentFruitsAndVegetablesTest:
                     <div id="fruit-legume">
                       <h2 id="3">Mars</h2>
                       <div class="elements">
-                        <ul id="legumes5">
+                        <ul id="legumesde-XXX">
                           <li><a href="chou-rave/">Chou-rave</a></li>
                           <li><a href="cima-di-rapa/">Cima di Rapa</a></li>
                         </ul>
                       </div>
                       <div class="elements">
-                        <ul id="fruitsRhubarbe">
+                        <ul id="fruitsde-XXX">
                           <li><a href="prune/">Prune</a></li>
                           <li><a href="quetsche/">Quetsche</a></li>
                         </ul>

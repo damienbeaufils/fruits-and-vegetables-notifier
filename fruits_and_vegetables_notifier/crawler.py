@@ -9,9 +9,9 @@ from bs4 import BeautifulSoup
 logger = logging.getLogger(__name__)
 
 ROOT_URL = 'https://www.fruits-legumes.org/mois/'
-ROOT_ELEMENT_ID = 'fruit-legume'
-VEGETABLES_UL_INDEX = 0
-FRUITS_UL_INDEX = 1
+FRUITS_AND_VEGETABLES_ELEMENT_ID = 'fruit-legume'
+VEGETABLES_UL_ID_PREFIX = 'legume'
+FRUITS_UL_ID_PREFIX = 'fruit'
 
 
 class Crawler:
@@ -38,11 +38,11 @@ class Crawler:
 
     def parse_fruits_of_month(self, markup, month):
         fruits_and_vegetables_of_current_month = self.parse_fruits_and_vegetables_of_current_month(markup, month)
-        return self.parse_links_from_specific_ul(fruits_and_vegetables_of_current_month, FRUITS_UL_INDEX)
+        return self.parse_links_from_specific_ul(fruits_and_vegetables_of_current_month, FRUITS_UL_ID_PREFIX)
 
     def parse_vegetables_of_month(self, markup, month):
         fruits_and_vegetables_of_current_month = self.parse_fruits_and_vegetables_of_current_month(markup, month)
-        return self.parse_links_from_specific_ul(fruits_and_vegetables_of_current_month, VEGETABLES_UL_INDEX)
+        return self.parse_links_from_specific_ul(fruits_and_vegetables_of_current_month, VEGETABLES_UL_ID_PREFIX)
 
     @staticmethod
     def parse_fruits_and_vegetables_of_current_month(markup, month):
@@ -51,8 +51,12 @@ class Crawler:
         return current_month_heading.parent if current_month_heading else None
 
     @staticmethod
-    def parse_links_from_specific_ul(fruits_and_vegetables_of_current_month, ul_index):
+    def parse_links_from_specific_ul(fruits_and_vegetables_of_current_month, ul_id_prefix):
         if fruits_and_vegetables_of_current_month is None:
             return []
 
-        return [link.get_text() for link in fruits_and_vegetables_of_current_month.find_all('ul')[ul_index].select('a')]
+        def starts_with_prefix(id):
+            return id.startswith(ul_id_prefix)
+
+        ul_starting_with_given_prefix = fruits_and_vegetables_of_current_month.find_all('ul', id=starts_with_prefix)[0]
+        return [link.get_text() for link in ul_starting_with_given_prefix.select('a')]
