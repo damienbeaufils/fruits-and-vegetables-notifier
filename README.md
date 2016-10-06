@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/damienbeaufils/fruits-and-vegetables-notifier.svg?branch=master)](https://travis-ci.org/damienbeaufils/fruits-and-vegetables-notifier)
 
-Print fruits and vegetables of current month.
+Crawl fruits and vegetables of current and next months, then send results by mail.
 
 ## Install
 
