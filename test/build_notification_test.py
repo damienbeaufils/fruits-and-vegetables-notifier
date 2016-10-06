@@ -107,3 +107,12 @@ class BuildNotificationTest:
         # then
         assert '<h3>Légumes arrivant le mois prochain</h3><ul><li>Pomme de terre</li><li>Potimarron</li></ul>' in \
                notification['Html-part']
+
+    def test_should_return_dict_containing_signature_in_html_part(self):
+        # when
+        notification = self.mailjet_sender.build_notification(self.current_fruits_and_vegetables, self.next_fruits,
+                                                              self.next_vegetables)
+
+        # then
+        assert notification['Html-part'].endswith(
+            '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a></i></small>')

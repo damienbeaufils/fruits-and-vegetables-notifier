@@ -15,7 +15,8 @@ class MailJetSender:
         vegetables_of_next_month = '<h3>Légumes arrivant le mois prochain</h3>' + '<ul><li>' + '</li><li>'.join(
             next_vegetables) + '</li></ul>'
 
-        body = fruits_of_month + fruits_of_next_month + vegetables_of_month + vegetables_of_next_month
+        signature = '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a></i></small>'
+        body = fruits_of_month + fruits_of_next_month + vegetables_of_month + vegetables_of_next_month + signature
 
         sender_email = os.environ['FROM_EMAIL']
         sender_name = 'Fruits and Vegetables notifier'
