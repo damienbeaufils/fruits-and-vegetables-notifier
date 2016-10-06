@@ -1,12 +1,9 @@
-import logging
 import urllib.error
 import urllib.parse
 import urllib.request
 from urllib.error import HTTPError
 
 from bs4 import BeautifulSoup
-
-logger = logging.getLogger(__name__)
 
 ROOT_URL = 'https://www.fruits-legumes.org/mois/'
 FRUITS_AND_VEGETABLES_ELEMENT_ID = 'fruit-legume'

@@ -1,25 +1,32 @@
 #!/usr/bin/env python
-
-import logging
-import pprint
+import os
 from datetime import datetime
 
+from mailjet_rest import Client
+
+from fruits_and_vegetables_notifier import logger
 from fruits_and_vegetables_notifier.crawler import Crawler
 from fruits_and_vegetables_notifier.diff import Diff
-
-logger = logging.getLogger(__name__)
-pp = pprint.PrettyPrinter(indent=4)
+from fruits_and_vegetables_notifier.mailjet_sender import MailJetSender
 
 current_month = int(datetime.now().strftime('%m'))
 next_month = current_month + 1 if current_month < 12 else 1
-current_fruits_and_vegetables = Crawler().get_fruits_and_vegetables_of_month(current_month)
-next_fruits_and_vegetables = Crawler().get_fruits_and_vegetables_of_month(next_month)
 
-print("Fruits and vegetables of month %s:" % current_month)
-pp.pprint(current_fruits_and_vegetables)
+crawler = Crawler()
+diff = Diff()
+mailjet_sender = MailJetSender()
 
-print("Next incoming fruits:")
-pp.pprint(Diff().next_fruits(current_fruits_and_vegetables, next_fruits_and_vegetables))
+api_key = os.environ['MJ_APIKEY_PUBLIC']
+api_secret = os.environ['MJ_APIKEY_PRIVATE']
+mailjet_client = Client(auth=(api_key, api_secret))
 
-print("Next incoming vegetables:")
-pp.pprint(Diff().next_vegetables(current_fruits_and_vegetables, next_fruits_and_vegetables))
+current_fruits_and_vegetables = crawler.get_fruits_and_vegetables_of_month(current_month)
+next_fruits_and_vegetables = crawler.get_fruits_and_vegetables_of_month(next_month)
+
+next_fruits = diff.next_fruits(current_fruits_and_vegetables, next_fruits_and_vegetables)
+next_vegetables = diff.next_vegetables(current_fruits_and_vegetables, next_fruits_and_vegetables)
+
+notification = mailjet_sender.build_notification(current_fruits_and_vegetables, next_fruits, next_vegetables)
+mailjet_sender.send_notification(mailjet_client, notification)
+
+logger.info('Fruits and vegetables notification sent!')
