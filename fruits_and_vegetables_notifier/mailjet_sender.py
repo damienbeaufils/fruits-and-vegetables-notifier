@@ -35,4 +35,5 @@ class MailJetSender:
         }
 
     def send_notification(self, mailjet_client, notification):
-        mailjet_client.send.create(data=notification)
+        result = mailjet_client.send.create(data=notification)
+        return result.ok

@@ -27,6 +27,8 @@ next_fruits = diff.next_fruits(current_fruits_and_vegetables, next_fruits_and_ve
 next_vegetables = diff.next_vegetables(current_fruits_and_vegetables, next_fruits_and_vegetables)
 
 notification = mailjet_sender.build_notification(current_fruits_and_vegetables, next_fruits, next_vegetables)
-mailjet_sender.send_notification(mailjet_client, notification)
-
-logger.info('Fruits and vegetables notification sent!')
+notification_sent = mailjet_sender.send_notification(mailjet_client, notification)
+if notification_sent:
+    logger.info('Fruits and vegetables notification successfully sent!')
+else:
+    logger.error('Error when sending fruits and vegetables notification!')
