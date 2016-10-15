@@ -2,21 +2,12 @@ import os
 
 
 class MailJetSender:
-    def build_notification(self, current_fruits_and_vegetables, next_fruits, next_vegetables):
-        fruits_of_month = '<h3>Fruits du mois</h3>' + '<ul><li>' + '</li><li>'.join(
-            current_fruits_and_vegetables['fruits']) + '</li></ul>'
-
-        vegetables_of_month = '<h3>Légumes du mois</h3>' + '<ul><li>' + '</li><li>'.join(
-            current_fruits_and_vegetables['vegetables']) + '</li></ul>'
-
-        fruits_of_next_month = '<h3>Fruits arrivant le mois prochain</h3>' + '<ul><li>' + '</li><li>'.join(
-            next_fruits) + '</li></ul>'
-
-        vegetables_of_next_month = '<h3>Légumes arrivant le mois prochain</h3>' + '<ul><li>' + '</li><li>'.join(
-            next_vegetables) + '</li></ul>'
-
-        signature = '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a></i></small>'
-        body = fruits_of_month + fruits_of_next_month + vegetables_of_month + vegetables_of_next_month + signature
+    def build_notification(self, current_fruits, current_vegetables, next_fruits, next_vegetables):
+        body = self.__build_notification_body(
+            current_fruits,
+            current_vegetables,
+            next_fruits,
+            next_vegetables)
 
         sender_email = os.environ['FROM_EMAIL']
         sender_name = 'Fruits and Vegetables notifier'
@@ -37,3 +28,22 @@ class MailJetSender:
     def send_notification(self, mailjet_client, notification):
         result = mailjet_client.send.create(data=notification)
         return result.ok
+
+    def __build_notification_body(self, current_fruits, current_vegetables, next_fruits, next_vegetables):
+        notification_template = \
+            '<h3>{title}</h3>' + \
+            '<ul>' + \
+            '<li>{elements}</li>' + \
+            '</ul>'
+
+        body = ''
+        for title, elements in [
+            ('Fruits du mois', current_fruits),
+            ('Légumes du mois', current_vegetables),
+            ('Fruits arrivant le mois prochain', next_fruits),
+            ('Légumes arrivant le mois prochain', next_vegetables)
+        ]:
+            body += notification_template.format(title=title, elements='</li><li>'.join(sorted(elements)))
+
+        signature = '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a></i></small>'
+        return body + signature

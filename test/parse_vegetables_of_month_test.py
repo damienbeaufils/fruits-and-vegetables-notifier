@@ -10,7 +10,7 @@ class ParseVegetablesTest:
         markup = None
 
         # when
-        vegetables = self.crawler.parse_vegetables_of_month(markup, 1)
+        vegetables = self.crawler._parse_vegetables_of_month(markup, 1)
 
         # then
         assert len(vegetables) is 0
@@ -20,7 +20,7 @@ class ParseVegetablesTest:
         markup = """<div></div>"""
 
         # when
-        vegetables = self.crawler.parse_vegetables_of_month(markup, 1)
+        vegetables = self.crawler._parse_vegetables_of_month(markup, 1)
 
         # then
         assert len(vegetables) is 0
@@ -33,12 +33,12 @@ class ParseVegetablesTest:
                         <ul id="legumesde-XXX"></ul>
                       </div>
                       <div class="elements">
-                        <ul id="vegetablesRhubarbe"></ul>
+                        <ul id="fruitsde-XXX"></ul>
                       </div>
                     </div>"""
 
         # when
-        vegetables = self.crawler.parse_vegetables_of_month(markup, 1)
+        vegetables = self.crawler._parse_vegetables_of_month(markup, 1)
 
         # then
         assert len(vegetables) is 0
@@ -54,12 +54,35 @@ class ParseVegetablesTest:
                         </ul>
                       </div>
                       <div class="elements">
-                        <ul id="vegetablesRhubarbe"></ul>
+                        <ul id="fruitsde-XXX"></ul>
                       </div>
                     </div>"""
 
         # when
-        vegetables = self.crawler.parse_vegetables_of_month(markup, 1)
+        vegetables = self.crawler._parse_vegetables_of_month(markup, 1)
+
+        # then
+        assert len(vegetables) is 2
+        assert 'Chou-rave' and 'Cima di Rapa' in vegetables
+
+    def test_should_return_a_list_containing_unique_vegetable_names_when_there_are_duplicates_in_markup(self):
+        # given
+        markup = """<div id="fruit-legume">
+                      <h2 id="1">Janvier</h2>
+                      <div class="elements">
+                        <ul id="legumesde-XXX">
+                          <li><a href="chou-rave/">Chou-rave</a></li>
+                          <li><a href="cima-di-rapa/">Cima di Rapa</a></li>
+                          <li><a href="chou-rave/">Chou-rave</a></li>
+                        </ul>
+                      </div>
+                      <div class="elements">
+                        <ul id="fruitsde-XXX"></ul>
+                      </div>
+                    </div>"""
+
+        # when
+        vegetables = self.crawler._parse_vegetables_of_month(markup, 1)
 
         # then
         assert len(vegetables) is 2
@@ -75,7 +98,7 @@ class ParseVegetablesTest:
                         </ul>
                       </div>
                       <div class="elements">
-                        <ul id="vegetablesRhubarbe">
+                        <ul id="fruitsde-XXX">
                             <li><a href="prune/">Prune</a></li>
                             <li><a href="quetsche/">Quetsche</a></li>
                         </ul>
@@ -83,7 +106,7 @@ class ParseVegetablesTest:
                     </div>"""
 
         # when
-        vegetables = self.crawler.parse_vegetables_of_month(markup, 1)
+        vegetables = self.crawler._parse_vegetables_of_month(markup, 1)
 
         # then
         assert len(vegetables) is 1
@@ -114,7 +137,7 @@ class ParseVegetablesTest:
                     </div>"""
 
         # when
-        vegetables = self.crawler.parse_vegetables_of_month(markup, 12)
+        vegetables = self.crawler._parse_vegetables_of_month(markup, 12)
 
         # then
         assert len(vegetables) is 1
@@ -137,7 +160,7 @@ class ParseVegetablesTest:
                     </div>"""
 
         # when
-        vegetables = self.crawler.parse_vegetables_of_month(markup, 1)
+        vegetables = self.crawler._parse_vegetables_of_month(markup, 1)
 
         # then
         assert 'Chou-rave' in vegetables

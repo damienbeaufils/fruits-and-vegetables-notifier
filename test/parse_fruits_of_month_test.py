@@ -10,7 +10,7 @@ class ParseFruitsTest:
         markup = None
 
         # when
-        fruits = self.crawler.parse_fruits_of_month(markup, 1)
+        fruits = self.crawler._parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 0
@@ -20,7 +20,7 @@ class ParseFruitsTest:
         markup = """<div></div>"""
 
         # when
-        fruits = self.crawler.parse_fruits_of_month(markup, 1)
+        fruits = self.crawler._parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 0
@@ -38,7 +38,7 @@ class ParseFruitsTest:
                     </div>"""
 
         # when
-        fruits = self.crawler.parse_fruits_of_month(markup, 1)
+        fruits = self.crawler._parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 0
@@ -59,7 +59,30 @@ class ParseFruitsTest:
                     </div>"""
 
         # when
-        fruits = self.crawler.parse_fruits_of_month(markup, 1)
+        fruits = self.crawler._parse_fruits_of_month(markup, 1)
+
+        # then
+        assert len(fruits) is 2
+        assert 'Prune' and 'Quetsche' in fruits
+
+    def test_should_return_a_list_containing_unique_fruits_name_when_there_are_duplicates_in_markup(self):
+        # given
+        markup = """<div id="fruit-legume">
+                      <h2 id="1">Janvier</h2>
+                      <div class="elements">
+                        <ul id="legumesde-XXX"></ul>
+                      </div>
+                      <div class="elements">
+                        <ul id="fruitsde-XXX">
+                          <li><a href="prune/">Prune</a></li>
+                          <li><a href="quetsche/">Quetsche</a></li>
+                          <li><a href="prune/">Prune</a></li>
+                        </ul>
+                      </div>
+                    </div>"""
+
+        # when
+        fruits = self.crawler._parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 2
@@ -83,7 +106,7 @@ class ParseFruitsTest:
                     </div>"""
 
         # when
-        fruits = self.crawler.parse_fruits_of_month(markup, 1)
+        fruits = self.crawler._parse_fruits_of_month(markup, 1)
 
         # then
         assert len(fruits) is 1
@@ -114,7 +137,7 @@ class ParseFruitsTest:
                     </div>"""
 
         # when
-        fruits = self.crawler.parse_fruits_of_month(markup, 12)
+        fruits = self.crawler._parse_fruits_of_month(markup, 12)
 
         # then
         assert len(fruits) is 1
@@ -137,7 +160,7 @@ class ParseFruitsTest:
                     </div>"""
 
         # when
-        fruits = self.crawler.parse_fruits_of_month(markup, 1)
+        fruits = self.crawler._parse_fruits_of_month(markup, 1)
 
         # then
         assert 'Prune' in fruits

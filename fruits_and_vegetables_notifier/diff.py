@@ -1,9 +1,9 @@
 class Diff:
-    def next_fruits(self, current, next):
-        return self.search_next(current, next, 'fruits')
+    def next_fruits_without_current(self, current, next):
+        return self.__search_next(current, next, 'fruits')
 
-    def next_vegetables(self, current, next):
-        return self.search_next(current, next, 'vegetables')
+    def next_vegetables_without_current(self, current, next):
+        return self.__search_next(current, next, 'vegetables')
 
-    def search_next(self, current, next, key):
-        return [fruit for fruit in next[key] if fruit not in current[key]]
+    def __search_next(self, current, next, key):
+        return next[key].difference(current[key])

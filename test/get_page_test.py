@@ -18,7 +18,7 @@ class GetPageTest:
         urlopen.return_value = response
 
         # when
-        body = self.crawler.get_page(self.url)
+        body = self.crawler._get_page(self.url)
 
         # then
         assert body == response_body
@@ -28,7 +28,7 @@ class GetPageTest:
         urlopen.side_effect = HTTPError(self.url, 404, '', None, None)
 
         # when
-        body = self.crawler.get_page(self.url)
+        body = self.crawler._get_page(self.url)
 
         # then
         assert body is None
@@ -38,7 +38,7 @@ class GetPageTest:
         urlopen.side_effect = Exception()
 
         # when
-        body = self.crawler.get_page(self.url)
+        body = self.crawler._get_page(self.url)
 
         # then
         assert body is None
@@ -48,7 +48,7 @@ class GetPageTest:
         urlopen.side_effect = HTTPError(self.url, 500, '', None, None)
 
         # when
-        body = self.crawler.get_page(self.url)
+        body = self.crawler._get_page(self.url)
 
         # then
         assert body is None
