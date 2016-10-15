@@ -8,6 +8,7 @@ from run import main
 
 class MainTest:
     def setup_method(self):
+        self.current_month = 12
         self.current_month_fruits_and_vegetables = {
             'fruits': {'Banane'},
             'vegetables': {'Asperge'}
@@ -28,11 +29,14 @@ class MainTest:
                 }
             ]
         }
+        self.api_key = 'mailjet_api_public_key'
+        self.api_secret = 'mailjet_api_private_key'
 
-    def test_should_send_notification_containing_current_and_next_crawled_fruits_and_vegetables(self):
+        os.environ['MJ_APIKEY_PUBLIC'] = self.api_key
+        os.environ['MJ_APIKEY_PRIVATE'] = self.api_secret
+
+    def test_should_send_cron_notification_containing_current_and_next_crawled_fruits_and_vegetables(self):
         # given
-        current_month = 12
-
         crawler = Crawler()
         crawler.get_fruits_and_vegetables_of_month = Mock(side_effect=self.__get_fruits_and_vegetables_of_month_stub)
 
@@ -40,20 +44,34 @@ class MainTest:
         mailjet_sender.build_notification = Mock(side_effect=self.__build_notification_stub)
         mailjet_sender.send_notification = Mock()
 
-        api_key = 'mailjet_api_public_key'
-        api_secret = 'mailjet_api_private_key'
-        os.environ['MJ_APIKEY_PUBLIC'] = api_key
-        os.environ['MJ_APIKEY_PRIVATE'] = api_secret
+        os.environ['TRAVIS_EVENT_TYPE'] = 'cron'
 
         # when
-        main(crawler, mailjet_sender, current_month)
+        main(crawler, mailjet_sender, self.current_month)
 
         # then
-        match_mailjet_client = MailJetClientMatcher((api_key, api_secret))
+        match_mailjet_client = MailJetClientMatcher((self.api_key, self.api_secret))
         mailjet_sender.send_notification.assert_called_once_with(match_mailjet_client, self.notification)
 
+    def test_should_not_send_any_notification_when_script_is_not_launched_by_a_cron_job(self):
+        # given
+        crawler = Crawler()
+        crawler.get_fruits_and_vegetables_of_month = Mock(side_effect=self.__get_fruits_and_vegetables_of_month_stub)
+
+        mailjet_sender = MailJetSender()
+        mailjet_sender.build_notification = Mock(side_effect=self.__build_notification_stub)
+        mailjet_sender.send_notification = Mock()
+
+        os.environ['TRAVIS_EVENT_TYPE'] = 'push'
+
+        # when
+        main(crawler, mailjet_sender, self.current_month)
+
+        # then
+        assert mailjet_sender.send_notification.call_count == 0
+
     def __get_fruits_and_vegetables_of_month_stub(self, month):
-        if month == 12:
+        if month == self.current_month:
             return self.current_month_fruits_and_vegetables
         elif month == 1:
             return self.next_month_fruits_and_vegetables
