@@ -18,13 +18,19 @@ class MailJetSender:
         for recipient in os.environ['TO_EMAILS'].split(','):
             recipients.append({"Email": recipient})
 
-        return {
+        notification = {
             'FromEmail': sender_email,
             'FromName': sender_name,
             'Recipients': recipients,
             'Subject': subject,
             'Html-part': body
         }
+
+        reply_to_environment_variable = 'REPLY_TO'
+        if reply_to_environment_variable in os.environ:
+            notification.update({'Headers': {'Reply-To': os.environ[reply_to_environment_variable]}})
+
+        return notification
 
     def send_notification(self, mailjet_client, notification):
         result = mailjet_client.send.create(data=notification)

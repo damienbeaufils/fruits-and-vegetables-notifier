@@ -10,6 +10,8 @@ class BuildNotificationTest:
         self.current_vegetables = {}
         self.next_fruits = {}
         self.next_vegetables = {}
+
+        os.environ.clear()
         os.environ['FROM_EMAIL'] = ''
         os.environ['TO_EMAILS'] = ''
 
@@ -115,3 +117,21 @@ class BuildNotificationTest:
         assert notification['Html-part'].endswith(
             '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a>' + \
             '<br/>Data kindly provided by https://www.fruits-legumes.org/</i></small>')
+
+    def test_should_add_reply_to_header_when_existing_in_environment_variable(self):
+        # given
+        os.environ['REPLY_TO'] = 'tony@stackindustries.com'
+
+        # when
+        notification = self.mailjet_sender.build_notification(self.current_fruits, self.current_vegetables,
+                                                              self.next_fruits, self.next_vegetables)
+
+        # then
+        assert notification['Headers'] == {'Reply-To': 'tony@stackindustries.com'}
+
+    def test_should_not_add_any_header_when_no_reply_to_environment_variable(self):
+        # when
+        notification = self.mailjet_sender.build_notification(self.current_fruits, self.current_vegetables,
+                                                              self.next_fruits, self.next_vegetables)
+        # then
+        assert 'Headers' not in notification

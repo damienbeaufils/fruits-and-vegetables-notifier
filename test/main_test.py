@@ -32,6 +32,7 @@ class MainTest:
         self.api_key = 'mailjet_api_public_key'
         self.api_secret = 'mailjet_api_private_key'
 
+        os.environ.clear()
         os.environ['MJ_APIKEY_PUBLIC'] = self.api_key
         os.environ['MJ_APIKEY_PRIVATE'] = self.api_secret
 
