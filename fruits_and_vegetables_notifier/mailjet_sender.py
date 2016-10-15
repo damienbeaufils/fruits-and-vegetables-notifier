@@ -10,8 +10,9 @@ class MailJetSender:
             next_vegetables)
 
         sender_email = os.environ['FROM_EMAIL']
-        sender_name = 'Fruits and Vegetables notifier'
-        subject = 'Les fruits et légumes du mois ! (et du mois prochain ;))'
+        sender_name = 'Fruits et légumes du mois'
+        subject = 'Les %d fruits et %d légumes du mois ! (et ceux arrivant le mois prochain)' \
+                  % (len(current_fruits), len(current_vegetables))
 
         recipients = []
         for recipient in os.environ['TO_EMAILS'].split(','):
@@ -45,5 +46,6 @@ class MailJetSender:
         ]:
             body += notification_template.format(title=title, elements='</li><li>'.join(sorted(elements)))
 
-        signature = '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a></i></small>'
+        signature = '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a>' + \
+                    '<br/>Data kindly provided by https://www.fruits-legumes.org/</i></small>'
         return body + signature

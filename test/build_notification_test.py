@@ -30,7 +30,7 @@ class BuildNotificationTest:
                                                               self.next_fruits, self.next_vegetables)
 
         # then
-        assert notification['FromName'] == 'Fruits and Vegetables notifier'
+        assert notification['FromName'] == 'Fruits et légumes du mois'
 
     def test_should_return_dict_using_recipient_addresses_from_os_env(self):
         # given
@@ -46,13 +46,17 @@ class BuildNotificationTest:
         assert notification['Recipients'][0]['Email'] == 'monkey.d.luffy@onepiece.org'
         assert notification['Recipients'][1]['Email'] == 'roronoa.zoro@onepiece.org'
 
-    def test_should_return_dict_with_raw_subject(self):
+    def test_should_return_dict_with_subject_containing_number_of_fruits_and_vegetables(self):
+        # given
+        self.current_fruits = {'Avocat', 'Raisin', 'Mandarine'}
+        self.current_vegetables = {'Bette', 'Topinambour'}
+
         # when
         notification = self.mailjet_sender.build_notification(self.current_fruits, self.current_vegetables,
                                                               self.next_fruits, self.next_vegetables)
 
         # then
-        assert notification['Subject'] == 'Les fruits et légumes du mois ! (et du mois prochain ;))'
+        assert notification['Subject'] == 'Les 3 fruits et 2 légumes du mois ! (et ceux arrivant le mois prochain)'
 
     def test_should_return_dict_containing_fruits_of_month_in_html_part(self):
         # given
@@ -109,4 +113,5 @@ class BuildNotificationTest:
 
         # then
         assert notification['Html-part'].endswith(
-            '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a></i></small>')
+            '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a>' + \
+            '<br/>Data kindly provided by https://www.fruits-legumes.org/</i></small>')
