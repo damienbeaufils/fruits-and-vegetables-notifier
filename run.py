@@ -11,9 +11,8 @@ from fruits_and_vegetables_notifier.mailjet_sender import MailJetSender
 
 
 def main(crawler, mailjet_sender, current_month):
-    travis_event_type = os.environ['TRAVIS_EVENT_TYPE']
-    logger.debug('TRAVIS_EVENT_TYPE = %s' % travis_event_type)
-    if travis_event_type != 'cron':
+    travis_event_type_key = 'TRAVIS_EVENT_TYPE'
+    if travis_event_type_key in os.environ and os.environ[travis_event_type_key] != 'cron':
         return
 
     next_month = current_month + 1 if current_month < 12 else 1
