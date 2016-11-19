@@ -50,7 +50,8 @@ class MailJetSender:
             ('Fruits arrivant le mois prochain', next_fruits),
             ('Légumes arrivant le mois prochain', next_vegetables)
         ]:
-            body += notification_template.format(title=title, elements='</li><li>'.join(sorted(elements)))
+            if elements:
+                body += notification_template.format(title=title, elements='</li><li>'.join(sorted(elements)))
 
         signature = '<br/><small><i>Fruits and vegetables notifier, an open-source software available on <a href="https://github.com/damienbeaufils/fruits-and-vegetables-notifier">GitHub</a>' + \
                     '<br/>Data kindly provided by https://www.fruits-legumes.org/</i></small>'
