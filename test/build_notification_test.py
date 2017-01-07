@@ -108,7 +108,7 @@ class BuildNotificationTest:
         assert '<h3>Légumes arrivant le mois prochain</h3><ul><li>Pomme de terre</li><li>Potimarron</li></ul>' in \
                notification['Html-part']
 
-    def test_should_return_dict_without_data_in_html_part_when_current_and_next_fruits_and_vegetables_are_empty(self):
+    def test_should_return_dict_without_data_in_html_part_when_current_fruits_and_vegetables_are_empty(self):
         # when
         notification = self.mailjet_sender.build_notification(self.current_fruits, self.current_vegetables,
                                                               self.next_fruits, self.next_vegetables)
@@ -116,8 +116,17 @@ class BuildNotificationTest:
         # then
         assert '<h3>Fruits du mois</h3><ul><li></li></ul>' not in notification['Html-part']
         assert '<h3>Légumes du mois</h3><ul><li></li></ul>' not in notification['Html-part']
-        assert '<h3>Fruits arrivant le mois prochain</h3><ul><li></li></ul>' not in notification['Html-part']
-        assert '<h3>Légumes arrivant le mois prochain</h3><ul><li></li></ul>' not in notification['Html-part']
+
+    def test_should_return_dict_containing_specific_no_news_message_when_next_fruits_and_vegetables_are_empty(self):
+        # when
+        notification = self.mailjet_sender.build_notification(self.current_fruits, self.current_vegetables,
+                                                              self.next_fruits, self.next_vegetables)
+
+        # then
+        assert '<h3>Fruits arrivant le mois prochain</h3><ul><li>Pas de nouveaux fruits !</li></ul>' in notification[
+            'Html-part']
+        assert '<h3>Légumes arrivant le mois prochain</h3><ul><li>Pas de nouveaux légumes !</li></ul>' in notification[
+            'Html-part']
 
     def test_should_return_dict_containing_signature_in_html_part(self):
         # when

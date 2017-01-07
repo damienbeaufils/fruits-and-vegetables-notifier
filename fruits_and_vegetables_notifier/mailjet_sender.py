@@ -47,8 +47,8 @@ class MailJetSender:
         for title, elements in [
             ('Fruits du mois', current_fruits),
             ('Légumes du mois', current_vegetables),
-            ('Fruits arrivant le mois prochain', next_fruits),
-            ('Légumes arrivant le mois prochain', next_vegetables)
+            ('Fruits arrivant le mois prochain', next_fruits if next_fruits else ['Pas de nouveaux fruits !']),
+            ('Légumes arrivant le mois prochain', next_vegetables if next_vegetables else ['Pas de nouveaux légumes !'])
         ]:
             if elements:
                 body += notification_template.format(title=title, elements='</li><li>'.join(sorted(elements)))
