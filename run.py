@@ -20,6 +20,9 @@ def main(crawler, mailjet_sender, current_month):
     current_fruits_and_vegetables = crawler.get_fruits_and_vegetables_of_month(current_month)
     next_fruits_and_vegetables = crawler.get_fruits_and_vegetables_of_month(next_month)
 
+    logger.debug("Current fruits and vegetables: %s", current_fruits_and_vegetables)
+    logger.debug("Next fruits and vegetables: %s", next_fruits_and_vegetables)
+
     diff = Diff()
     next_fruits = diff.next_fruits_without_current(current_fruits_and_vegetables, next_fruits_and_vegetables)
     next_vegetables = diff.next_vegetables_without_current(current_fruits_and_vegetables, next_fruits_and_vegetables)
